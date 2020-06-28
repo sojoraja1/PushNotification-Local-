@@ -3,6 +3,63 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:meta/meta.dart';
 
+Future<NotificationDetails> _imageAndIcon(
+    BuildContext context, Image picture, Image icon) async {
+  final iconPath = await saveImage(context, icon);
+  final picturePath = await saveImage(context, picture);
+
+  final bigPictureStyleInformation = BigPictureStyleInformation(
+    FilePathAndroidBitmap(picturePath),
+    largeIcon: FilePathAndroidBitmap(iconPath),
+  );
+
+  final androidPlatformChannelSpecifics = AndroidNotificationDetails(
+    'big text channel id',
+    'big text channel name',
+    'big text channel description',
+    styleInformation: bigPictureStyleInformation,
+  );
+  return NotificationDetails(androidPlatformChannelSpecifics, null);
+}
+
+Future showIconAndImageNotification(
+  BuildContext context,
+  FlutterLocalNotificationsPlugin notifications, {
+  @required String title,
+  @required String body,
+  @required Image picture,
+  @required Image icon,
+  int id = 0,
+}) async =>
+    notifications.show(
+        id, title, body, await _imageAndIcon(context, picture, icon));
+
+Future<NotificationDetails> _image(BuildContext context, Image picture) async {
+  final picturePath = await saveImage(context, picture);
+
+  final bigPictureStyleInformation = BigPictureStyleInformation(
+    FilePathAndroidBitmap(picturePath),
+  );
+
+  final androidPlatformChannelSpecifics = AndroidNotificationDetails(
+    'big text channel id',
+    'big text channel name',
+    'big text channel description',
+    styleInformation: bigPictureStyleInformation,
+  );
+  return NotificationDetails(androidPlatformChannelSpecifics, null);
+}
+
+Future showImageNotification(
+  BuildContext context,
+  FlutterLocalNotificationsPlugin notifications, {
+  @required String title,
+  @required String body,
+  @required Image picture,
+  int id = 0,
+}) async =>
+    notifications.show(id, title, body, await _image(context, picture));
+
 Future<NotificationDetails> _icon(BuildContext context, Image icon) async {
   final iconPath = await saveImage(context, icon);
 
